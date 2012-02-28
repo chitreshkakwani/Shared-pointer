@@ -28,5 +28,22 @@ void SharedPtrTest::Test()
 	
 	CPPUNIT_ASSERT(sp3.isNull() == true);
 	CPPUNIT_ASSERT(!sp3 == true);
+
+	// Comparison operators
+	CPPUNIT_ASSERT(sp1 == sp2);
+	CPPUNIT_ASSERT(!(sp1 != sp2));
+
+	// Derived classes
+	shared_ptr<Dummy> derived1(new DummyDerived());
+	
+	shared_ptr<Dummy> derived2(new Dummy());
+
+	CPPUNIT_ASSERT(derived1 != derived2);
+
+	derived1->m_data = 1;
+	derived2 = derived1;
+	
+	CPPUNIT_ASSERT(derived1->GetData() == 2);
+	CPPUNIT_ASSERT(derived2->GetData() == 2);
 }
 

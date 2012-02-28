@@ -56,19 +56,19 @@ class shared_ptr: private shared_ptr_base
 public:
 
 	// FIXME: Should this be explicit ?
-	shared_ptr() : m_pData(0), m_pRefCount(0)
+	shared_ptr() : m_pointer(0), m_pRefCount(0)
 	{
 		m_pRefCount = new RefCount();
 		m_pRefCount->AddRef();
 	}
 
-	shared_ptr(T* ptr) : m_pData(ptr), m_pRefCount(0)
+	shared_ptr(T* ptr) : m_pointer(ptr), m_pRefCount(0)
 	{
 		m_pRefCount = new RefCount();
 		m_pRefCount->AddRef();
 	}
 
-	shared_ptr(const shared_ptr<T>& ptr) : m_pData(ptr.m_pData), m_pRefCount(ptr.m_pRefCount)
+	shared_ptr(const shared_ptr<T>& ptr) : m_pointer(ptr.m_pointer), m_pRefCount(ptr.m_pRefCount)
 	{
 		m_pRefCount->AddRef();
 	}
@@ -77,29 +77,29 @@ public:
 	{
 		if(m_pRefCount->Release() == 0)
 		{
-			if(m_pData)
-				delete m_pData;
+			if(m_pointer)
+				delete m_pointer;
 			delete m_pRefCount;
 		}
 	}
 
-	bool isNull()
+	bool isNull() const
 	{
-		return m_pData == 0;
+		return m_pointer == 0;
 	}
 
-	bool operator!()
+	bool operator!() const
 	{
-		return m_pData == 0;
+		return m_pointer == 0;
 	}
 
 	void swap(shared_ptr<T>& rhs)
 	{
-		T* pData = rhs.m_pData;
+		T* pData = rhs.m_pointer;
 		RefCount* pRefCount = rhs.m_pRefCount;
-		rhs.m_pData = this->m_pData;
+		rhs.m_pointer = this->m_pointer;
 		rhs.m_pRefCount = this->m_pRefCount;
-		this->m_pData = pData;
+		this->m_pointer = pData;
 		this->m_pRefCount = pRefCount;
 	}
 
@@ -118,18 +118,18 @@ public:
 	
 	T& operator*()
 	{
-		return *m_pData;
+		return *m_pointer;
 	}
 
 	T* operator->()
 	{
-		return m_pData;
+		return m_pointer;
 	}
 
 
 private:
 
-	T* m_pData;
+	T* m_pointer;
 	RefCount* m_pRefCount;
 
 	template<class X>
@@ -150,13 +150,13 @@ private:
 template<class T>
 inline bool operator==(const shared_ptr<T>& p1, const shared_ptr<T>& p2)
 {
-	return p1.m_pData == p2.m_pData;
+	return p1.m_pointer == p2.m_pointer;
 }
 
 template<class T>
 inline bool operator!=(const shared_ptr<T>& p1, const shared_ptr<T>& p2)
 {
-	return p1.m_pData != p2.m_pData;
+	return p1.m_pointer != p2.m_pointer;
 }
 
 

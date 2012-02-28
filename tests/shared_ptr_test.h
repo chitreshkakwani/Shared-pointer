@@ -35,15 +35,28 @@ public:
 	{
 	}
 	
-	~Dummy()
+	virtual ~Dummy()
 	{
 		if(m_pData)
 			delete m_pData;
+	}
+
+	virtual int GetData()
+	{
+		return m_data;
 	}
 
 	int* m_pData;
 	int m_data;
 };
 	
+class DummyDerived : public Dummy
+{
+	virtual int GetData()
+	{
+		return m_data * 2;
+	}
+};
+
 #endif
 
