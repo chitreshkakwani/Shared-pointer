@@ -22,6 +22,11 @@ void SharedPtrTest::Test()
 	sp2 = sp1;
 
 	CPPUNIT_ASSERT(sp2->m_data == 5);
+
+	/* Reference count
+         * ref_count is exposed for testing only
+	 */
+	CPPUNIT_ASSERT(sp2.ref_count() == 2);
 	
 	// Null pointer
 	shared_ptr<Dummy> sp3;

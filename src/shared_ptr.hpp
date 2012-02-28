@@ -19,6 +19,11 @@ public:
 		return --m_refCount;
 	}
 
+	int count()
+	{
+		return m_refCount;
+	}
+
 private:
 
 	int m_refCount;
@@ -126,6 +131,10 @@ public:
 		return m_pointer;
 	}
 
+	int ref_count()
+	{
+		return m_pRefCount->count();
+	}
 
 private:
 
