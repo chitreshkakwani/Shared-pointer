@@ -83,6 +83,16 @@ public:
 		}
 	}
 
+	bool isNull()
+	{
+		return m_pData == 0;
+	}
+
+	bool operator!()
+	{
+		return m_pData == 0;
+	}
+
 	void swap(shared_ptr<T>& rhs)
 	{
 		T* pData = rhs.m_pData;

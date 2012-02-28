@@ -22,5 +22,11 @@ void SharedPtrTest::Test()
 	sp2 = sp1;
 
 	CPPUNIT_ASSERT(sp2->m_data == 5);
+	
+	// Null pointer
+	shared_ptr<Dummy> sp3;
+	
+	CPPUNIT_ASSERT(sp3.isNull() == true);
+	CPPUNIT_ASSERT(!sp3 == true);
 }
 
