@@ -44,9 +44,9 @@ class shared_ptr_base
 {
 private:
 
-	void operator==(const shared_ptr_base&, const shared_ptr_base&) const;
+	void operator==(const shared_ptr_base&) const;
 
-	void operator!=(const shared_ptr_base&, const shared_ptr_base&) const;
+	void operator!=(const shared_ptr_base&) const;
 };
 
 
@@ -77,27 +77,35 @@ public:
 	{
 		if(m_pRefCount->Release() == 0)
 		{
-			delete m_pData;
+			if(m_pData)
+				delete m_pData;
 			delete m_pRefCount;
 		}
 	}
 
-	shared_ptr<T>& operator=(const shared_ptr<T>& ptr)
+	void swap(shared_ptr<T>& rhs)
 	{
-		if(this != &ptr)
-		{
-			if(m_pRefCount->Release() == 0)
-			{
-				delete m_pData;
-				delete m_pRefCount;
-			}
-
-			m_pData = ptr.m_pData;
-			m_pRefCount = ptr.m_pRefCount;
-			m_pRefCount->AddRef();
-		}
+		T* pData = rhs.m_pData;
+		RefCount* pRefCount = rhs.m_pRefCount;
+		rhs.m_pData = this->m_pData;
+		rhs.m_pRefCount = this->m_pRefCount;
+		this->m_pData = pData;
+		this->m_pRefCount = pRefCount;
 	}
 
+	shared_ptr<T>& operator=(const shared_ptr<T>& rhs)
+	{
+		/*
+		 * Copy-and-swap idiom
+		 * Make a copy of rhs using the copy ctor, swap the values of the copy
+		 * with this. The destruction of the swapped copy is then taken care of
+		 * by the destructor
+                 */
+		shared_ptr<T> c(rhs);
+		c.swap(*this);
+		return *this;
+	}
+	
 	T& operator*()
 	{
 		return *m_pData;
@@ -114,8 +122,11 @@ private:
 	T* m_pData;
 	RefCount* m_pRefCount;
 
-	friend bool operator==(const shared_ptr<T>&, const shared_ptr<T>&);
-	friend bool operator!=(const shared_ptr<T>&, const shared_ptr<T>&);
+	template<class X>
+	friend bool operator==(const shared_ptr<X>&, const shared_ptr<X>&);
+
+	template<class X>
+	friend bool operator!=(const shared_ptr<X>&, const shared_ptr<X>&);
 };
 
 
