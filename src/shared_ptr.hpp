@@ -1,5 +1,18 @@
+/**
+  * Ref counted shared pointer
+  * 
+  * Author : Chitresh Kakwani <chitreshkakwani@gmail.com>
+  *
+  */
+
 namespace custom
 {
+
+enum EPointerType
+{
+	EPointerTypePtr,
+	EPointerTypeArray
+};
 
 class RefCount
 {
@@ -55,9 +68,10 @@ private:
 };
 
 
-template<typename T>
+template<typename T, EPointerType ptrType = EPointerTypePtr>
 class shared_ptr: private shared_ptr_base
 {
+
 public:
 
 	// FIXME: Should this be explicit ?
@@ -83,7 +97,12 @@ public:
 		if(m_pRefCount->Release() == 0)
 		{
 			if(m_pointer)
-				delete m_pointer;
+			{
+				if(ptrType == EPointerTypePtr)
+					delete m_pointer;
+				else
+					delete[] m_pointer;
+			}
 			delete m_pRefCount;
 		}
 	}
@@ -120,7 +139,7 @@ public:
 		c.swap(*this);
 		return *this;
 	}
-	
+
 	T& operator*()
 	{
 		return *m_pointer;
@@ -136,16 +155,17 @@ public:
 		return m_pRefCount->count();
 	}
 
-private:
-
-	T* m_pointer;
-	RefCount* m_pRefCount;
-
 	template<class X>
 	friend bool operator==(const shared_ptr<X>&, const shared_ptr<X>&);
 
 	template<class X>
 	friend bool operator!=(const shared_ptr<X>&, const shared_ptr<X>&);
+
+private:
+	
+	T* m_pointer;
+	RefCount* m_pRefCount;
+
 };
 
 
@@ -170,4 +190,5 @@ inline bool operator!=(const shared_ptr<T>& p1, const shared_ptr<T>& p2)
 
 
 }
+
 

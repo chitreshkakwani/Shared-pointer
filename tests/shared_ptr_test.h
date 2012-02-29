@@ -55,7 +55,8 @@ class DummyDerived : public Dummy
 	virtual int GetData()
 	{
 		return m_data * 2;
-	}
+	}	
+
 };
 
 #endif
